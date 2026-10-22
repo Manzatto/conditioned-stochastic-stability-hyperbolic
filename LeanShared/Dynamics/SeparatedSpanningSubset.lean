@@ -1,0 +1,62 @@
+module
+
+public import LeanShared.Dynamics.ThermodynamicDefinitions
+public import Mathlib.Order.Lattice.Nat
+
+/-! Maximal-cardinality actual separated sets span any prescribed subset,
+including the empty subset. A finite cardinal bound constructs the cover;
+no compactness or invariant-subset hypothesis is needed. -/
+public noncomputable section
+open Set Function
+namespace LeanShared.ThermodynamicDefinitions
+variable {X : Type*} [MetricSpace X]
+
+theorem exists_separated_spanning_subset (T : X → X) (K : Set X) (n : ℕ) (ε : ℝ) (positive : 0 < ε)
+    (C : ℕ) (count : ∀ s : Finset X, Separated T K n ε s → s.card ≤ C) :
+    ∃ s : Finset X, Separated T K n ε s ∧
+      ∀ x ∈ K, ∃ y ∈ s, ∀ j < n, dist (T^[j] x) (T^[j] y) < ε := by
+  classical
+  let cards : Set ℕ := {m | ∃ s : Finset X, Separated T K n ε s ∧ s.card=m}
+  have empty : Separated T K n ε (∅ : Finset X) := by
+    constructor <;> simp
+  have bounded : BddAbove cards := by
+    refine ⟨C,?_⟩
+    rintro m ⟨s,hs,rfl⟩
+    exact count s hs
+  obtain ⟨s,separated,card⟩ := Nat.sSup_mem (s := cards) ⟨0,∅,empty,rfl⟩ bounded
+  have maximal (q : Finset X) (hq : Separated T K n ε q) : q.card ≤ s.card := by
+    rw [card]
+    exact le_csSup bounded ⟨q,hq,rfl⟩
+  refine ⟨s,separated,?_⟩
+  intro x inside
+  by_contra failure
+  have far : ∀ y ∈ s, ∃ j < n, ε ≤ dist (T^[j] x) (T^[j] y) := by
+    push Not at failure
+    simpa only [exists_prop] using failure
+  have absent : x ∉ s := by
+    intro hx
+    obtain ⟨j,_,bad⟩ := far x hx
+    have impossible : (0 : ℝ) < 0 := by simpa only [dist_self] using positive.trans_le bad
+    exact (lt_irrefl 0) impossible
+  have enlarged : Separated T K n ε (insert x s) := by
+    refine ⟨?_,?_⟩
+    · intro y hy
+      rcases Finset.mem_insert.mp hy with same | old
+      · exact same ▸ inside
+      · exact separated.1 y old
+    intro y hy z hz different
+    rcases Finset.mem_insert.mp hy with hyx | hys
+    · subst y
+      rcases Finset.mem_insert.mp hz with hzx | hzs
+      · exact (different hzx.symm).elim
+      · exact far z hzs
+    · rcases Finset.mem_insert.mp hz with hzx | hzs
+      · subst z
+        obtain ⟨j,hj,bound⟩ := far y hys
+        exact ⟨j,hj,by simpa only [dist_comm] using bound⟩
+      · exact separated.2 y hys z hzs different
+  have impossible := maximal (insert x s) enlarged
+  rw [Finset.card_insert_of_notMem absent] at impossible
+  omega
+
+end LeanShared.ThermodynamicDefinitions

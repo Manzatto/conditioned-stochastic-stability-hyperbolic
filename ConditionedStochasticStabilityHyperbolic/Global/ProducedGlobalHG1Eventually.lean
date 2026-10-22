@@ -1,0 +1,224 @@
+module
+
+public import ConditionedStochasticStabilityHyperbolic.Global.ProducedModelClosedLayerFactory
+public import ConditionedStochasticStabilityHyperbolic.Global.ProducedDominantPressureGrowthEventually
+public import ConditionedStochasticStabilityHyperbolic.Global.ActualFiltrationSelectedQuasiErgodic
+public import ConditionedStochasticStabilityHyperbolic.Global.LiteralLiveCompleteSpectral
+
+/-! # A selected prefix constructed from produced physical models
+
+Analytic projectors, the physical closed gap, pressure-slack growth of every
+subordinate stratum, and the prefix gap/product are constructed in order.
+Only ordinary comparison/density/plaque sources remain at the analytic gate;
+no physical gap, growth bound, prefix QEM or noisy rate convergence is input.
+-/
+@[expose] public noncomputable section
+open MeasureTheory ProbabilityTheory Filter Set Function
+open scoped Topology NNReal BoundedContinuousFunction
+namespace ConditionedStochasticStabilityHyperbolic.Global.ProducedGlobalHG1Eventually
+open LeanShared ShiftedFiltrationGeometry ActualFiltrationGrowth ComplexStrongFeller RestrictedLayerChain
+open FiltrationPressureConfinement
+open KellerLiverani1999 LocalPositiveCollar Restriction LayerQuasiErgodic
+open LeanShared.ControlledPlaqueClosure
+variable {X I Ξ Ω Z Zret : Type*}
+  [MetricSpace X] [CompactSpace X] [MeasurableSpace X] [BorelSpace X] [SecondCountableTopology X]
+  [MeasurableSpace Ξ] [TopologicalSpace Ω] [CompactSpace Ω] [MeasurableSpace Ω]
+  [NormedAddCommGroup Z] [NormedSpace ℂ Z] [NormedAddCommGroup Zret] [NormedSpace ℂ Zret]
+
+local instance compactClosedLayer (T : X ≃ₜ X) (A : Set X) (Λ : I → Set X) (ℓ N : ℕ)
+    (D : AdaptedSource T A Λ ℓ) (i : Fin ℓ) : CompactSpace (closedLayer T A Λ ℓ N D i) :=
+  isCompact_iff_compactSpace.mp (isCompact_univ.of_isClosed_subset isClosed_closure (subset_univ _))
+
+/-- Literal live-state spectral, measure, support and QEM conclusions. -/
+def CompleteResult (C : AbsorbingMarkovChains.CanonicalChain X) (hSF : HasStrongFellerKernel C)
+    (A : Set X) (hA : IsOpen A) (Λ : Set X) (rate : ℝ) (product : Measure X) : Prop :=
+    ∃ dl : RankOneSpectralData (transferOperator (𝕜 := ℝ)
+      (chain C Aᶜ hA.measurableSet.compl)
+      (strongFeller C hSF Aᶜ hA.measurableSet.compl)) (1 : ↥(Aᶜ) →ᵇ ℝ),
+      dl.rate = rate ∧
+    ∃ μ : Measure ↥(Aᶜ), IsFiniteMeasure μ ∧
+      (∀ f : ↥(Aᶜ) →ᵇ ℝ, dl.mean f = ∫ y, f y ∂μ) ∧
+      (chain C Aᶜ hA.measurableSet.compl).killedTransition ∘ₘ μ = ENNReal.ofReal dl.rate • μ ∧
+      (chain C Aᶜ hA.measurableSet.compl).IsQuasiErgodic (eigenvectorMeasure μ dl.eigenvector) ∧
+      (eigenvectorMeasure μ dl.eigenvector).map Subtype.val = product ∧
+      {x : ↥(Aᶜ) | x.val ∈ Λ} ⊆ (eigenvectorMeasure μ dl.eigenvector).support ∧
+      (∀ η : Measure ↥(Aᶜ), (chain C Aᶜ hA.measurableSet.compl).IsQuasiErgodic η →
+        {x : ↥(Aᶜ) | x.val ∈ Λ} ⊆ η.support → η = eigenvectorMeasure μ dl.eigenvector) ∧
+      (∀ f : ↥(Aᶜ) →ᵇ ℝ,
+        transferOperator (𝕜 := ℝ) (chain C Aᶜ hA.measurableSet.compl)
+          (strongFeller C hSF Aᶜ hA.measurableSet.compl) f = dl.rate • f →
+        f = dl.mean f • dl.eigenvector) ∧
+      spectralRadius ℝ (transferOperator (𝕜 := ℝ) (chain C Aᶜ hA.measurableSet.compl)
+        (strongFeller C hSF Aᶜ hA.measurableSet.compl)) = ENNReal.ofReal dl.rate ∧
+      (∀ (ν : Measure ↥(Aᶜ)) [IsFiniteMeasure ν],
+        (chain C Aᶜ hA.measurableSet.compl).killedTransition ∘ₘ ν = ENNReal.ofReal dl.rate • ν →
+        ν = ENNReal.ofReal (∫ x, dl.eigenvector x ∂ν) • μ) ∧
+      (∀ (ν : Measure ↥(Aᶜ)) [IsFiniteMeasure ν],
+        (chain C Aᶜ hA.measurableSet.compl).killedTransition ∘ₘ ν = ENNReal.ofReal dl.rate • ν →
+        (∫ x, dl.eigenvector x ∂ν) = 1 → ν = μ)
+
+theorem exists_literal_global_package_from_produced_models
+    (T : X ≃ₜ X) (A : Set X) (hA : IsOpen A) (Λ : I → Set X) (ℓ N : ℕ)
+    (D : AdaptedSource T A Λ ℓ) (j : Fin ℓ)
+    (hΛ : ∀ i : Fin ℓ, (Λ (D.index i)).Nonempty)
+    (E Mid Weak : Fin ℓ → Type*)
+    [∀ i, NormedAddCommGroup (E i)] [∀ i, NormedSpace ℂ (E i)]
+    [∀ i, CompleteSpace (E i)] [∀ i, Nontrivial (E i)]
+    [∀ i, NormedAddCommGroup (Mid i)] [∀ i, NormedSpace ℂ (Mid i)]
+    [∀ i, NormedAddCommGroup (Weak i)] [∀ i, NormedSpace ℂ (Weak i)]
+    [∀ i, CompleteSpace (Weak i)]
+    (pressure : I → ℝ) (hgap : ∀ i : Fin ℓ, i ≠ j → pressure (D.index i) < pressure (D.index j))
+    (iH : ∀ i, E i →L[ℂ] Mid i) (iW : ∀ i, E i →L[ℂ] Weak i)
+    (law : NNReal → Measure Ξ) (prob : ∀ ε, IsProbabilityMeasure (law ε))
+    (generator : ∀ i, NNReal → Ξ → E i →L[ℂ] E i) (scale : Fin ℓ → ℝ)
+    (models : ∀ i, ProducedAnnealedModel.Data (iH i) (iW i) law prob (generator i) (scale i))
+    (essential : ∀ i, EssentialRadiusContract (E := E i) (W := Weak i))
+    (kl : ClassicalContract (E := E j) (W := Weak j))
+    (confine : ∀ i, ClassicalConfinementContract (E := E i) (W := Weak i))
+    (hdet : ∀ i, spectralRadius ℂ ((scale i : ℂ) • (models i).inputs.operator 0) ≤ ENNReal.ofReal (Real.exp (pressure (D.index i))))
+    (hprincipal : ∀ i, (models i).inputs.principal ≤ Real.exp (pressure (D.index i)))
+    (det : DeterministicLeading ((models j).inputs.operator 0)) (cutoff margin : ℝ)
+    (hαq : (models j).inputs.principal / scale j < cutoff) (hqr : cutoff < det.rate)
+    (hqweak : cutoff < (models j).inputs.weakRate / scale j) (hsubq : det.subordinate < cutoff)
+    (hmargin : 0 < margin) (hmarginSub : margin < cutoff - det.subordinate)
+    (hmarginLead : margin < det.rate - cutoff) (hq : 0 < cutoff)
+    (hpressure : scale j * det.rate = Real.exp (pressure (D.index j)))
+    (R : ℝ) (hR : 0 < R) (hscaleJ : scale j = R)
+    (V G U : Set X) (hV : IsOpen V) (hVK : V ⊆ closedLayer T A Λ ℓ N D j)
+    (hU : IsOpen U) (hcoreU : Λ (D.index j) ⊆ U)
+    (hUV : closure U ⊆ V) (hUG : closure U ⊆ G)
+    (hsep : (T '' closure U) ∩ forwardTrapped T (closedLayer T A Λ ℓ N D j) ⊆ U)
+    (hcoreG : Λ (D.index j) ⊆ G) (htrans : forwardTransitiveOn T (Λ (D.index j)))
+    (w : X → ℝ) (hw : Measurable w)
+    (hwK : Continuous (fun x : closedLayer T A Λ ℓ N D j => w x.val))
+    (hwG : ∀ x : closedLayer T A Λ ℓ N D j, x.val ∈ G → 0 < w x.val)
+    (hwR : ∀ x, w x ≤ R)
+    (ρ : NNReal → Measure Ω) [∀ ε, IsProbabilityMeasure (ρ ε)]
+    (hρ : ∀ ε, 0 < ε → (ρ ε).IsOpenPosMeasure)
+    (F : NNReal → X × Ω → X) (hF : ∀ ε, Measurable (F ε))
+    (C : NNReal → AbsorbingMarkovChains.CanonicalChain X)
+    (hactual : ∀ ε, C ε = NoiseKernel.chain (ρ ε) (F ε) (hF ε) Aᶜ hA.measurableSet.compl w hw R hR hwR)
+    (hSF : ∀ ε, 0 < ε → HasStrongFellerKernel (C ε))
+    (hnoUp : ∀ᶠ ε : NNReal in 𝓝[>] 0, ∀ _hε : 0 < ε, ∀ i, i ≤ ℓ → ∀ x ∈ levels T A Λ ℓ N D i,
+      (C ε).killedTransition x (levels T A Λ ℓ N D i)ᶜ = 0)
+    (hzeroA : ∀ ε, 0 < ε → ∀ x, (C ε).killedTransition x A = 0)
+    (hUltra : ∀ i, StrongFellerSquareCompact.UltraFellerContract (X := closedLayer T A Λ ℓ N D i))
+    (hFredholm : ∀ i, PowerCompactGap.SquareCompactFredholm (F := closedLayer T A Λ ℓ N D i →ᵇ ℂ))
+    (hcompare : ∀ i, ∀ᶠ ε : NNReal in 𝓝[>] 0, ∀ (hε : 0 < ε) (f : closedLayer T A Λ ℓ N D i →ᵇ ℂ), f ≠ 0 → ∀ z : ℂ,
+      (R • transferOperator (𝕜 := ℂ) (chain (C ε) (closedLayer T A Λ ℓ N D i) (closedLayer_measurable T A Λ ℓ N D i))
+        (strongFeller (C ε) (hSF ε hε) (closedLayer T A Λ ℓ N D i) (closedLayer_measurable T A Λ ℓ N D i))) f = z • f →
+      (models i).inputs.principal < ‖z‖ → z ∈ spectrum ℂ ((scale i : ℂ) • (models i).inputs.operator ε))
+    (σ : Measure X) (density : NNReal → X × X → ENNReal)
+    (hdensity : ∀ ε, 0 < ε → ∀ x, (C ε).killedTransition x = σ.withDensity (fun y => density ε (x, y)))
+    (hpre : ∀ B : Set X, σ B = 0 → σ (T ⁻¹' B) = 0)
+    (hnull : ∀ i, 0 < i → i ≤ ℓ → σ (frontier (D.levels i)) = 0) :
+    ∃ outputs : ProjectorOutputs (models j).inputs.operator
+      (LeanShared.TwoNormNormalization.weakEmbedding (iW j)) det cutoff margin,
+      ∃ η ζ : ℝ, 0 < η ∧ 0 < ζ ∧ (
+      (∀ᶠ ε : NNReal in 𝓝[>] 0, ∀ _hε : 0 < ε, ∀ x ∈ closedLayer T A Λ ℓ N D j, ∀ z, dist (F ε (x, z)) (T x) < η) →
+      (∀ᶠ ε : NNReal in 𝓝[>] 0, ∀ _hε : 0 < ε, Nonempty (ForwardCollarPlaqueInputs T (F ε) V (closedLayer T A Λ ℓ N D j) G)) →
+      ∀ (wc : closedLayer T A Λ ℓ N D j → ℝ) (hwc : Measurable wc) (hwcR : ∀ x, wc x ≤ R),
+      (∀ x : closedLayer T A Λ ℓ N D j, x.val ∈ closure U → wc x = w x.val) →
+      let KD := fun ε => RestrictedNoise.chain (ρ ε) (F ε) (hF ε) (closedLayer T A Λ ℓ N D j)
+        (closedLayer_measurable T A Λ ℓ N D j) wc hwc R hR hwcR
+      ∀ (sfD : ∀ ε, 0 < ε → HasStrongFellerKernel (KD ε)),
+      (∀ᶠ ε : NNReal in 𝓝[>] 0, ∀ hε : 0 < ε, Nonempty (ClassicalSameCutoffComparisons (Z := Z) (Zret := Zret) outputs ε (KD ε) (sfD ε hε) R
+        (retainedRegion (closedLayer T A Λ ℓ N D j) U))) →
+      (∀ᶠ ε : NNReal in 𝓝[>] 0, ∀ _hε : 0 < ε, Nonempty (NoFullSupportCollarDensityCertificate.Inputs T V (closedLayer T A Λ ℓ N D j) G
+        (isCompact_univ.of_isClosed_subset isClosed_closure (subset_univ _)) (ρ ε) (F ε) (hF ε)
+        (fun x : closedLayer T A Λ ℓ N D j => w x.val) (hw.comp measurable_subtype_coe) R ζ)) →
+      ∀ᶠ ε : NNReal in 𝓝[>] 0, ∀ hε : 0 < ε,
+        ∃ dc : RankOneSpectralData (R • transferOperator (𝕜 := ℝ)
+            (chain (C ε) (closedLayer T A Λ ℓ N D j) (closedLayer_measurable T A Λ ℓ N D j))
+            (strongFeller (C ε) (hSF ε hε) (closedLayer T A Λ ℓ N D j) (closedLayer_measurable T A Λ ℓ N D j)))
+            (1 : closedLayer T A Λ ℓ N D j →ᵇ ℝ),
+            dc.rate = R * (outputs.eigenvalue ε).re ∧
+            ∃ μ : Measure (closedLayer T A Λ ℓ N D j), IsFiniteMeasure μ ∧
+              (∀ f, dc.mean f = ∫ y, f y ∂μ) ∧
+              CompleteResult (C ε) (hSF ε hε) A hA (Λ (D.index j)) (outputs.eigenvalue ε).re
+                ((eigenvectorMeasure μ dc.eigenvector).map Subtype.val)) := by
+  classical
+  subst R
+  let K := closedLayer T A Λ ℓ N D j
+  have hK : IsCompact K := isCompact_univ.of_isClosed_subset isClosed_closure (subset_univ _)
+  have hcoreEq : isolatedCore T K = Λ (D.index j) := closed_layer_core T A Λ ℓ N D hA j
+  have hKLive : K ⊆ Aᶜ := by
+    apply closure_minimal _ hA.isClosed_compl
+    intro x hx hxA
+    exact hx.2 (levels_monotone T A Λ ℓ N D (Nat.zero_le j.val)
+      ((levels_zero T A Λ ℓ N D).symm ▸ hxA))
+  obtain ⟨outputs, η, ζ, hη, hζ, hproduce⟩ :=
+    ProducedModelClosedLayerFactory.exists_actual_closed_layer_data_of_produced_model
+      (Z := Z) (Zret := Zret) (Ω := Ω) (iH j) (iW j) law prob (generator j) (scale j) (models j)
+      (essential j) kl det cutoff margin hαq hqr hqweak hsubq hmargin hmarginSub hmarginLead hq hR
+      T Aᶜ V K G U hA.measurableSet.compl hKLive hV hVK hK hU
+      (hcoreEq.symm ▸ hcoreU) hUV hUG hsep (hcoreEq.symm ▸ hcoreG)
+      (hcoreEq.symm ▸ htrans) (hcoreEq.symm ▸ hΛ j) w hw hwK hwG hwR
+  refine ⟨outputs, η, ζ, hη, hζ, ?_⟩
+  intro hclose hplaques wc hwc hwcR hagree
+  dsimp only
+  intro sfD comparisons certificates
+  let J : Finset (Fin ℓ) := Finset.univ.filter (fun i => i ≠ j)
+  obtain ⟨β, hβ, hbounds⟩ :=
+    ProducedDominantPressureGrowthEventually.eventually_stratum_bounds_from_actual_projector_rate
+      T A Λ ℓ N D hA hΛ E Mid Weak J pressure (pressure (D.index j))
+      (fun i hi => hgap i (Finset.mem_filter.mp hi).2)
+      iH iW law prob generator scale models essential (fun i _ => confine i)
+      (fun i _ => hdet i) (fun i _ => hprincipal i) j det cutoff margin outputs hpressure
+      C hSF (fun _ => scale j) (fun i _ => hUltra i) (fun i _ => hFredholm i)
+      (fun i _ => hcompare i)
+      σ density hdensity hpre hnull
+  filter_upwards [hbounds, hclose, hplaques, comparisons, certificates, hnoUp] with ε hb hcloseε hplaquesε comparisonsε certificatesε hnoUpε
+  intro hε
+  obtain ⟨plaquesε⟩ := hplaquesε hε
+  obtain ⟨comparisonε⟩ := comparisonsε hε
+  obtain ⟨certificateε⟩ := certificatesε hε
+  let : (ρ ε).IsOpenPosMeasure := hρ ε hε
+  have hSFactual : HasStrongFellerKernel
+      (NoiseKernel.chain (ρ ε) (F ε) (hF ε) Aᶜ hA.measurableSet.compl w hw (scale j) hR hwR) := by
+    rw [← hactual ε]
+    exact hSF ε hε
+  have hp := hproduce (ρ ε) (F ε) (hF ε) (hcloseε hε) plaquesε
+    wc hwc hwcR hagree hSFactual (sfD ε hε) ε comparisonε certificateε
+  have hop : (scale j • transferOperator (𝕜 := ℝ)
+      (chain (C ε) K hK.measurableSet) (strongFeller (C ε) (hSF ε hε) K hK.measurableSet)) =
+      (scale j • transferOperator (𝕜 := ℝ)
+        (chain (NoiseKernel.chain (ρ ε) (F ε) (hF ε) Aᶜ hA.measurableSet.compl w hw (scale j) hR hwR)
+          K hK.measurableSet) (strongFeller _ hSFactual K hK.measurableSet)) := by
+    simp only [hactual ε]
+  rw [← hop] at hp
+  obtain ⟨dc, hrate, _hone, μ, hμ, hm, _hloc, hpos, hsupp⟩ := hp
+  let : IsFiniteMeasure μ := hμ
+  have hβdc : β < dc.rate := by rw [hrate]; exact (hb hε).1
+  have hleaves : ∀ i : Fin ℓ, i ≠ j → ∃ B : ℝ, 0 ≤ B ∧ ∀ n : ℕ,
+      ‖(scale j • transferOperator (𝕜 := ℝ)
+        (chain (C ε) (stratum T A Λ ℓ N D i) (stratum_measurable T A Λ ℓ N D hA i))
+        (strongFeller (C ε) (hSF ε hε) (stratum T A Λ ℓ N D i)
+          (stratum_measurable T A Λ ℓ N D hA i)))^n‖ ≤ B * β^n := by
+    intro i hij
+    exact (hb hε).2 i (Finset.mem_filter.mpr ⟨Finset.mem_univ _, hij⟩)
+  obtain ⟨dg, hgrate, _hqem, hid, hsupport, _hunique, hvector, _hlimits⟩ :=
+    ActualFiltrationSelectedQuasiErgodic.exists_actual_global_selected_QEM
+      T A hA Λ ℓ N D j (C ε) (hSF ε hε) (hzeroA ε hε) (hnoUpε hε)
+      (scale j) hR dc hβ hβdc hleaves σ (density ε) (hdensity ε hε) hpre hnull μ hm (hΛ j)
+      (fun x hx => hpos x (hcoreEq.symm ▸ hx)) (hcoreEq ▸ hsupp)
+  have hcoreStratum : Λ (D.index j) ⊆ stratum T A Λ ℓ N D j := by
+    rw [← literal_core T A Λ ℓ N D j]
+    exact fun _ hx => hx.1 0
+  have hpositive : ∀ x ∈ Λ (D.index j), 0 < dg.eigenvector x := by
+    intro x hx
+    rw [hvector ⟨x, hcoreStratum hx⟩]
+    exact mul_pos (inv_pos.mpr (mul_pos (inv_pos.mpr hR) dc.rate_pos))
+      (hpos _ (hcoreEq.symm ▸ hx))
+  have hrateGlobal : dg.rate = (outputs.eigenvalue ε).re := by
+    rw [hgrate, hrate, ← mul_assoc, inv_mul_cancel₀ (ne_of_gt hR), one_mul]
+  have hΛlive : Λ (D.index j) ⊆ Aᶜ := by
+    intro x hx
+    exact hKLive (subset_closure (hcoreStratum hx))
+  have hpkg := LiteralLiveCompleteSpectral.exists_literal_live_package_with_left_uniqueness
+    (C ε) (hSF ε hε) A hA (hzeroA ε hε) dg (Λ (D.index j)) (hΛ j) hΛlive hpositive hsupport
+  change CompleteResult (C ε) (hSF ε hε) A hA (Λ (D.index j)) dg.rate (productMeasure (C ε) (hSF ε hε) dg) at hpkg
+  rw [hrateGlobal, hid] at hpkg
+  exact ⟨dc, hrate, μ, hμ, hm, hpkg⟩
+
+end ConditionedStochasticStabilityHyperbolic.Global.ProducedGlobalHG1Eventually

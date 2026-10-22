@@ -1,0 +1,137 @@
+name: Conditioned stochastic stability (Lean)
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: conditioned-stochastic-stability-${{ github.ref }}
+  # A documentation update must not discard a running proof verification.
+  cancel-in-progress: false
+
+jobs:
+  verify:
+    name: Lean verification
+    runs-on: ubuntu-24.04
+    timeout-minutes: 360
+    env:
+      VERIFY_JOBS: "2"
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          fetch-depth: 0
+      - name: Reuse a successful verification when Lean inputs are unchanged
+        id: verified
+        env:
+          GH_TOKEN: ${{ github.token }}
+          FORCE_FULL: ${{ github.event_name == 'workflow_dispatch' }}
+        run: |
+          python3 - <<'PY'
+          import hashlib
+          import json
+          import os
+          from pathlib import Path
+          import subprocess
+
+          required = {"lean-toolchain", "lakefile.toml", "lake-manifest.json", "scripts/verify.sh"}
+          def is_input(path):
+              return path.endswith(".lean") or path in required
+
+          tracked = subprocess.check_output(["git", "ls-files", "-z"]).decode().split("\0")
+          paths = sorted(path for path in tracked if is_input(path))
+          if not required.issubset(paths):
+              raise SystemExit("Required verification inputs are missing")
+          manifest = "".join(
+              f"{hashlib.sha256(Path(path).read_bytes()).hexdigest()}  {path}\n"
+              for path in paths
+          )
+          digest = hashlib.sha256(manifest.encode()).hexdigest()
+          force_full = os.environ.get("FORCE_FULL") == "true"
+          # Bootstrap from the documented, fully checked local source snapshot.
+          reused = not force_full and digest == "3f6d89d47dff3e0fe7b305c7ae14f60e61797e4d37c76b60c3013d9a24ddf576"
+          evidence = "https://github.com/Manzatto/conditioned-stochastic-stability-hyperbolic/blob/ac08e1d28af8b3656fcc05eec35301eb58d13341/docs/LocalVerification.md"
+
+          if not reused and not force_full:
+              # Later source revisions may have their own successful full check.
+              endpoint = f"repos/{os.environ['GITHUB_REPOSITORY']}/actions/workflows/lean.yml/runs?status=success&per_page=100"
+              try:
+                  history = json.loads(subprocess.check_output(["gh", "api", endpoint], stderr=subprocess.DEVNULL))
+              except (subprocess.CalledProcessError, OSError, ValueError):
+                  history = {"workflow_runs": []}
+                  print("Could not read previous runs; requiring full verification.")
+              for run in history["workflow_runs"]:
+                  if run.get("conclusion") != "success":
+                      continue
+                  try:
+                      changed = subprocess.check_output(
+                          ["git", "diff", "--name-only", "--no-renames", "-z", run["head_sha"], "HEAD", "--"],
+                          stderr=subprocess.DEVNULL,
+                      ).decode().split("\0")
+                  except subprocess.CalledProcessError:
+                      continue
+                  if not any(is_input(path) for path in changed):
+                      reused = True
+                      evidence = run["html_url"]
+                      break
+
+          with open(os.environ["GITHUB_OUTPUT"], "a") as output:
+              output.write(f"reuse={'true' if reused else 'false'}\n")
+          message = (
+              f"Lean inputs are unchanged from [successful verification]({evidence}). "
+              "Reusing that result; no Lean build or strict recheck was repeated."
+              if reused else "Fresh Lean verification is required."
+          )
+          print(message)
+          with open(os.environ["GITHUB_STEP_SUMMARY"], "a") as summary:
+              summary.write(f"{message}\n\nInput manifest SHA-256: `{digest}`\n")
+          PY
+      - name: Make room for Lean, Mathlib, and the three libraries
+        if: steps.verified.outputs.reuse != 'true'
+        run: |
+          df -h .
+          # These preinstalled SDKs are unused by this Lean-only project.
+          sudo rm -rf -- /usr/local/lib/android /usr/share/dotnet /usr/local/.ghcup /opt/ghc
+          df -h .
+          available_kib=$(df -Pk . | awk 'NR == 2 { print $4 }')
+          if (( available_kib < 20 * 1024 * 1024 )); then
+            echo "::error::At least 20 GiB of free disk space is required for Lean and the Mathlib build."
+            exit 1
+          fi
+      - name: Build all three libraries with warnings treated as errors
+        if: steps.verified.outputs.reuse != 'true'
+        uses: leanprover/lean-action@38fbc41a8c28c4cbaec22d7f7de508ec2e7c0dd9
+        with:
+          auto-config: "false"
+          build: "true"
+          build-args: >-
+            --wfail
+            LeanShared
+            AbsorbingMarkovChains
+            ConditionedStochasticStabilityHyperbolic
+          test: "false"
+          lint: "false"
+          use-mathlib-cache: "true"
+          # Archiving the entire .lake tree needs extra temporary disk space.
+          # Keep Mathlib's download cache, but do not archive the project build.
+          use-github-cache: "false"
+      - name: Strictly recheck every source module and run Audit.lean
+        if: steps.verified.outputs.reuse != 'true'
+        run: |
+          df -h .
+          lake env bash scripts/verify.sh --inside-lake-environment 2>&1 | tee lean-verification.log
+      - name: Retain the strict-check and axiom-audit log
+        if: always() && steps.verified.outputs.reuse != 'true'
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: conditioned-stochastic-stability-lean-verification
+          path: lean-verification.log
+          if-no-files-found: ignore
+          retention-days: 7
