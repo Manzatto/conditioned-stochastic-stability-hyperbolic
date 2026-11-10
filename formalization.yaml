@@ -1,0 +1,126 @@
+version: v0.4
+project:
+  name: Conditioned stochastic stability of equilibrium states on uniformly hyperbolic sets
+  description: >-
+    A Lean formalization of local and global conditioned stochastic stability
+    for uniformly hyperbolic systems. It constructs quasi-ergodic measures for
+    small random perturbations killed outside a live region and proves their
+    weak convergence to equilibrium states for the potential given by the
+    original potential minus the logarithm of the unstable Jacobian. The
+    development includes global Axiom A filtrations, leading spectral data,
+    and a local compact embedding theorem for anisotropic Banach spaces.
+  authors:
+    - Bernat Bassols Cornudella
+    - Matheus M Castro
+  responsible_maintainers:
+    - Bernat Bassols Cornudella
+    - Matheus M Castro
+  license: Apache-2.0
+classification:
+  arxiv: [math.DS, math.PR]
+  msc2020: [60J05, 37C30, 37D20, 37D35, 37D45]
+sources:
+  - title: Conditioned stochastic stability of equilibrium states on uniformly hyperbolic sets
+    authors:
+      - Bernat Bassols Cornudella
+      - Matheus M. Castro
+    id: arXiv:2506.15503v3
+    location: https://arxiv.org/abs/2506.15503v3
+    type: paper
+    relationship: adapts
+    note: >-
+      Main source for Theorems 2.7, 2.8, 2.10, 2.11, 3.15 and 6.5.
+      The precise encodings, extra hypotheses and scope qualifications are
+      recorded in README.md and docs/StatementAudit.md.
+  - title: "Dynamical Zeta Functions and Dynamical Determinants for Hyperbolic Maps: A Functional Approach"
+    authors: [Viviane Baladi]
+    type: book
+    location: "Springer, Ergebnisse der Mathematik und ihrer Grenzgebiete (3), volume 68, 2018"
+    relationship: adapts
+    note: >-
+      Chapters 4 and 5 supply the anisotropic-space and transfer-operator
+      constructions developed in the Baladi folder. Only the estimates and
+      spectral conclusions needed by the main results are claimed; the full
+      explicit essential-radius formula is not a registered claim.
+  - title: Dynamical determinants and spectrum for hyperbolic diffeomorphisms
+    authors: [Viviane Baladi, Masato Tsujii]
+    type: paper
+    location: "Contemporary Mathematics 469, 2008"
+    relationship: adapts
+    note: "Anisotropic spaces, transfer estimates and comparison of spectra on two spaces."
+  - title: "Compact locally maximal hyperbolic sets for smooth maps: fine statistical properties"
+    authors: [Sébastien Gouëzel, Carlangelo Liverani]
+    type: paper
+    location: "Journal of Differential Geometry 79 (3), 433–477, 2008"
+    relationship: adapts
+    note: "Leading spectral data and identification of the equilibrium-state product."
+  - title: Stability of the spectrum for transfer operators
+    authors: [Gerhard Keller, Carlangelo Liverani]
+    type: paper
+    location: "Annali della Scuola Normale Superiore di Pisa, Classe di Scienze (4), 28 (1), 141–152, 1999"
+    relationship: adapts
+    note: >-
+      The simple isolated leading-eigenvalue perturbation theorem used in the
+      proofs. The formalization does not claim the explicit projector
+      convergence rate from the general theorem.
+status:
+  scope: >-
+    The proof development contains the six numbered main results and the
+    supporting constructions listed in README.md. Theorem 3.15 is the local
+    Euclidean compact embedding to which the paper reduces the manifold
+    statement. Four independent Challenge modules and Comparator configurations
+    cover all six results. The Theorem 6.5 adapter exposes the constructed
+    filtration and measure families as existential witnesses, preserving the
+    original literal and labelled conclusions and specifying the physical chain.
+    The counts below concern the proof development and exclude deliberate
+    holes in independent Challenge statements.
+  sorry_count: 0
+  sorry_in_definitions: 0
+  axioms: []
+automation:
+  methods:
+    - method: agent
+      models: [Claude Opus 5.5, ChatGPT Sol 6.1]
+      tool_setup: >-
+        Lean 4.35.0 and pinned Mathlib. These models are credited for the Lean
+        formalization in the paper's Use of AI declaration. Further framework,
+        prompting and cost details were not recorded in this repository.
+    - method: agent
+      models: [GPT-6]
+      framework: Codex
+      tool_setup: >-
+        Prepared the independent Challenge statements, comparison configurations
+        and metadata, and proved the compact comparison identities, global gap
+        definition contract and Theorem 6.5 witness adapter using Lean 4.35.0
+        and pinned Mathlib.
+  spend_usd: not tracked
+review:
+  status: self-assessed
+  notes: >-
+    The proof libraries and Solution built with warnings treated as errors.
+    The changed proof definitions and Solution passed strict Lean checks, and
+    the project axiom audit permitted only propext, Quot.sound and
+    Classical.choice. All four Comparator configurations passed statement
+    comparison and NanoDa, con-ron and Lean kernel checking. These local macOS
+    checks used --inadvisably-no-sandbox and do not certify Linux sandbox
+    isolation. docs/StatementAudit.md records a statement comparison, with
+    limits on which definitions were reviewed; docs/LocalVerification.md records
+    historical verification. No independent human review of the Lean
+    formalization is claimed.
+
+fidelity:
+  divergences: >-
+    Quasi-ergodicity is tested on bounded measurable real observables using
+    survival-conditioned expected Birkhoff averages. Local regularity on the
+    closed region is encoded by a nonnegative regular extension on the ambient
+    manifold. The global results explicitly assume strict trapping
+    T(closure A) subset A and agreement of the physical and reference weights
+    on retained basic sets. Theorem 6.5 states measurability of the potential
+    separately. A continuous Riemannian metric is used. Theorem 3.15 is the
+    local compact-injection statement, with its cone and exponent hypotheses.
+    The scalar normalizer bounds the exponential weight and is an encoding
+    device. See README.md and docs/StatementAudit.md for the full account.
+acknowledgements: >-
+  Lean, Mathlib and their contributors. Mathematical source authors are
+  credited in sources; their works and software dependencies retain their own
+  licenses. This repository contains the substantive proof development.

@@ -3,10 +3,11 @@
 This repository is a complete Lean 4 formalization of the main results of the article
 *Conditioned stochastic stability of equilibrium states on uniformly hyperbolic sets* ([arxiv.org/abs/2506.15503](https://arxiv.org/abs/2506.15503)).
 
-- Every theorem is proved.
-- The sources contain no `sorry` and no `axiom`.
-- Every declaration depends only on the three standard axioms `propext`, `Classical.choice` and
-  `Quot.sound`.
+- Every theorem in the proof development is proved.
+- The proof development contains no `sorry` and no `axiom`. Palomar Challenge
+  statements have deliberate holes, excluded from these proof-status claims.
+- Every proof-development declaration depends only on the three standard axioms
+  `propext`, `Classical.choice` and `Quot.sound`.
 
 The project uses Lean 4.35.0 and Mathlib.
 
@@ -138,7 +139,7 @@ Other classical results proved in the formalization:
 
 Each folder `F/` has an index module `F.lean` that imports all of its files.
 
-The repository has three Lean libraries:
+The proof development has three Lean libraries:
 
 - `ConditionedStochasticStabilityHyperbolic` is specific to the article.
 - `LeanShared` contains the general mathematics the proofs rely on, stated outside the setting of
@@ -180,6 +181,70 @@ lake check --paranoid    # also the bundled independent checkers (lean4lean, nan
 `lake check` runs inside a `bubblewrap` sandbox, which exists only on Linux. On macOS, add
 `--inadvisably-no-sandbox`. The sandbox only protects the machine from untrusted code; it does not
 change what is checked.
+
+## Palomar submission
+
+The six main results are split across four independent statements because
+Palomar limits each Challenge to 1,000 lines and 100 KiB. Each Challenge imports
+only Mathlib and specifies its mathematical definitions. All configurations use
+[`Solution.lean`](Solution.lean), which exports the existing proofs and proves
+additional identities needed to characterize definition holes.
+
+| Results | Independent statement | Comparator configuration |
+| --- | --- | --- |
+| Theorems 2.7 and 2.8 | [`Challenge.lean`](Challenge.lean) | [`comparator.json`](comparator.json) |
+| Theorems 2.10 and 2.11 | [`GlobalChallenge.lean`](GlobalChallenge.lean) | [`comparator-global.json`](comparator-global.json) |
+| Theorem 3.15 | [`CompactChallenge.lean`](CompactChallenge.lean) | [`comparator-compact.json`](comparator-compact.json) |
+| Theorem 6.5 | [`FiltrationChallenge.lean`](FiltrationChallenge.lean) | [`comparator-filtration.json`](comparator-filtration.json) |
+
+The local and global definition holes are the killed noisy chain and its
+continuous transfer operator; compared integral identities specify their action.
+The global statement also characterizes the spectral eigenmeasure by integration
+and fixes the normalized-gap predicate by an explicit biconditional.
+The compact statement specifies the supported Schwartz core, all admissible
+leaves, graph Gram measures, Fourier multipliers and closure norms. Its compared
+identities characterize graph representations, Fourier blocks, core coordinates,
+the closure of the core range, exponent losses and the continuous embedding.
+These holes belong to the independent statements; the solution and proof libraries
+contain no `sorry`.
+
+The filtration entry also compares the two case equations for extending
+observables by zero at the cemetery, fixing the extension used by its
+conditional path averages.
+
+Theorem 3.15 retains the local Euclidean formulation explained above. Theorem 6.5
+uses `Palomar.Theorem6_5`, proved from the original theorem: it presents the
+constructed filtration and measure families as explicit existential witnesses,
+retains every literal and labelled HG2 conclusion, and identifies the chain with
+the physical noisy process on the stated small-noise window. The original theorem
+remains available. All mathematical scope qualifications above and in
+[`docs/StatementAudit.md`](docs/StatementAudit.md) still apply.
+
+[`formalization.yaml`](formalization.yaml) records authorship, sources, AI
+provenance, verification and review status, and known limitations.
+
+Run the proof build, strict checks and axiom audit with `bash scripts/verify.sh`.
+Run all four comparisons, including the bundled NanoDa, con-ron and Lean kernel
+checks, on Linux with:
+
+```sh
+bash scripts/verify.sh --palomar
+```
+
+On macOS, local checking requires the explicit flag
+`bash scripts/verify.sh --palomar --inadvisably-no-sandbox` because the protected
+runner uses Linux bubblewrap. This local run cannot establish sandbox isolation;
+Palomar must rerun protected verification. The script explicitly selects the
+bundled NanoDa and con-ron binaries in temporary runtime configuration copies.
+Submit the checked-in JSON files unchanged: verifier-specific fields do not
+belong in the submitted configurations.
+
+Submit four entries using the same final, pushed, public 40-character commit SHA,
+one per configuration in the table. Leave the project and metadata path overrides
+blank for this root layout. Use `comparator-global.json`, `comparator-compact.json`
+and `comparator-filtration.json` as the Comparator path overrides for the three
+nondefault entries. Follow the [current submission instructions](https://palomar-registry.org/how-to-submit)
+and [policy](https://github.com/PalomarRegistry/PalomarPolicy/blob/main/CONTRIBUTING.md).
 
 ## License
 

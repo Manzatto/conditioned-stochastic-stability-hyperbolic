@@ -1,0 +1,16 @@
+{
+  "challenge_module": "Challenge",
+  "solution_module": "Solution",
+  "theorem_names": [
+    "ConditionedStochasticStabilityHyperbolic.Theorem2_7",
+    "ConditionedStochasticStabilityHyperbolic.Theorem2_8",
+    "ConditionedStochasticStabilityHyperbolic.Paper.RegularNoise.Maps.raw_measurable",
+    "ConditionedStochasticStabilityHyperbolic.RestrictedNoise.integral_chain",
+    "ConditionedStochasticStabilityHyperbolic.strongFellerTransferOperator_represents"
+  ],
+  "definition_names": [
+    "ConditionedStochasticStabilityHyperbolic.RestrictedNoise.chain",
+    "ConditionedStochasticStabilityHyperbolic.strongFellerTransferOperator"
+  ],
+  "permitted_axioms": ["propext", "Quot.sound", "Classical.choice"]
+}

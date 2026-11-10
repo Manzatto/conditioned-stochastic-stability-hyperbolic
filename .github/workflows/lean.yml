@@ -4,18 +4,31 @@ on:
   push:
   pull_request:
   workflow_dispatch:
+    inputs:
+      palomar_preflight:
+        description: Run Palomar's full mechanical preflight for all four entries
+        type: boolean
+        default: false
+      authorization_relationship:
+        description: Your relationship to the substantive formalization
+        type: choice
+        default: I am a responsible author or maintainer
+        options:
+          - I am a responsible author or maintainer
+          - I have approval from a responsible author or maintainer
 
 permissions:
   contents: read
   actions: read
 
 concurrency:
-  group: conditioned-stochastic-stability-${{ github.ref }}
+  group: conditioned-stochastic-stability-${{ github.ref }}-${{ inputs.palomar_preflight && 'palomar' || 'lean' }}
   # A documentation update must not discard a running proof verification.
   cancel-in-progress: false
 
 jobs:
   verify:
+    if: github.event_name != 'workflow_dispatch' || !inputs.palomar_preflight
     name: Lean verification
     runs-on: ubuntu-24.04
     timeout-minutes: 360
@@ -68,6 +81,8 @@ jobs:
                   history = {"workflow_runs": []}
                   print("Could not read previous runs; requiring full verification.")
               for run in history["workflow_runs"]:
+                  if run.get("event") == "workflow_dispatch":
+                      continue
                   if run.get("conclusion") != "success":
                       continue
                   try:
@@ -105,7 +120,7 @@ jobs:
             echo "::error::At least 20 GiB of free disk space is required for Lean and the Mathlib build."
             exit 1
           fi
-      - name: Build all three libraries with warnings treated as errors
+      - name: Build the proof libraries and Palomar solution with warnings treated as errors
         if: steps.verified.outputs.reuse != 'true'
         uses: leanprover/lean-action@38fbc41a8c28c4cbaec22d7f7de508ec2e7c0dd9
         with:
@@ -116,6 +131,7 @@ jobs:
             LeanShared
             AbsorbingMarkovChains
             ConditionedStochasticStabilityHyperbolic
+            Solution
           test: "false"
           lint: "false"
           use-mathlib-cache: "true"
@@ -135,3 +151,29 @@ jobs:
           path: lean-verification.log
           if-no-files-found: ignore
           retention-days: 7
+
+  palomar-preflight:
+    if: github.event_name == 'workflow_dispatch' && inputs.palomar_preflight
+    name: Palomar preflight (${{ matrix.config }})
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - config: comparator.json
+            request_id: preflight001
+          - config: comparator-global.json
+            request_id: preflight002
+          - config: comparator-compact.json
+            request_id: preflight003
+          - config: comparator-filtration.json
+            request_id: preflight004
+    uses: PalomarRegistry/PalomarSubmission/.github/workflows/submission.yml@14aa8d6b3c2f14a8540605e37144560b9a00e7e7
+    with:
+      repository: ${{ github.repository }}
+      commit: ${{ github.sha }}
+      pipeline_commit: 14aa8d6b3c2f14a8540605e37144560b9a00e7e7
+      request_id: ${{ matrix.request_id }}
+      mode: full
+      execution_profile: palomar-standard-v1
+      options: >-
+        {"comparator_config_path":"${{ matrix.config }}","authorization_relationship":"${{ inputs.authorization_relationship }}"}

@@ -1,0 +1,36 @@
+{
+  "challenge_module": "CompactChallenge",
+  "solution_module": "Solution",
+  "theorem_names": [
+    "ConditionedStochasticStabilityHyperbolic.Theorem3_15",
+    "ConditionedStochasticStabilityHyperbolic.AllFakeLeafModel.slope_positive",
+    "ConditionedStochasticStabilityHyperbolic.AllFakeLeafModel.slope_bound",
+    "LeanShared.FakeLeafGraph.heightExtension_off_domain",
+    "LeanShared.FakeLeafGraph.graphExtension_image",
+    "LeanShared.ConeFourierBlocks.fourier_block",
+    "ConditionedStochasticStabilityHyperbolic.AllFakeLeafCanonicalCrossCone.embedding_core",
+    "ConditionedStochasticStabilityHyperbolic.Palomar.family_description",
+    "ConditionedStochasticStabilityHyperbolic.Palomar.family_domain_open",
+    "ConditionedStochasticStabilityHyperbolic.Palomar.symbols_apply",
+    "ConditionedStochasticStabilityHyperbolic.Palomar.core_ae",
+    "ConditionedStochasticStabilityHyperbolic.Palomar.finalCore_apply",
+    "LeanShared.SchwartzJetSpace.wordDerivative._proof_1",
+    "ConditionedStochasticStabilityHyperbolic.Palomar.space_mem_iff"
+  ],
+  "definition_names": [
+    "ConditionedStochasticStabilityHyperbolic.AllFakeLeafModel.slope",
+    "LeanShared.FakeLeafGraph.heightExtension",
+    "ConditionedStochasticStabilityHyperbolic.AllFakeLeafDyadicDistribution.family",
+    "LeanShared.ConeDyadicSymbols.symbols",
+    "LeanShared.ConeFourierBlocks.block",
+    "ConditionedStochasticStabilityHyperbolic.AllFakeLeafCanonicalDistribution.core",
+    "LeanShared.DyadicCompletion.finalCore",
+    "ConditionedStochasticStabilityHyperbolic.AllFakeLeafCanonicalCrossCone.embedding",
+    "ConditionedStochasticStabilityHyperbolic.AllFakeLeafCanonicalDistribution.Space"
+  ],
+  "permitted_axioms": [
+    "propext",
+    "Quot.sound",
+    "Classical.choice"
+  ]
+}

@@ -15,3 +15,18 @@ name = "AbsorbingMarkovChains"
 
 [[lean_lib]]
 name = "ConditionedStochasticStabilityHyperbolic"
+
+[[lean_lib]]
+name = "Solution"
+
+[[lean_lib]]
+name = "Challenge"
+
+[[lean_lib]]
+name = "GlobalChallenge"
+
+[[lean_lib]]
+name = "CompactChallenge"
+
+[[lean_lib]]
+name = "FiltrationChallenge"

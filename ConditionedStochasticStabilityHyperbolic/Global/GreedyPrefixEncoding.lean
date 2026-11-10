@@ -5,7 +5,7 @@ public import ConditionedStochasticStabilityHyperbolic.Global.DerivedHG2Basins
 
 /-! Encode the constructed residual sizes as the literal terminal/root
 indices used by the checked HG2 basin application. -/
-public noncomputable section
+@[expose] public noncomputable section
 open Set Relation
 namespace ConditionedStochasticStabilityHyperbolic.Global.GreedyPrefixGeometry.Data
 open LeanShared PressureFiltrationSource DerivedHG2Basins

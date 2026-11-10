@@ -2976,6 +2976,7 @@ import all LeanShared.Topology.PositiveWeightRobustness
 import all LeanShared.Topology.UniformControlImage
 import all LeanShared.Topology.UniformInverseCloseness
 import all LeanShared.Topology.UniformLocalInjectivityWindows
+import all Solution
 
 /-! Check actual private proof axioms. Theorem parameters are audited as hypotheses. -/
 
@@ -2991,7 +2992,8 @@ run_cmd do
         (`AbsorbingMarkovChains).isPrefixOf name ||
         name.toString.startsWith "_private.ConditionedStochasticStabilityHyperbolic." ||
         name.toString.startsWith "_private.LeanShared." ||
-        name.toString.startsWith "_private.AbsorbingMarkovChains." then
+        name.toString.startsWith "_private.AbsorbingMarkovChains." ||
+        name.toString.startsWith "_private.Solution." then
       match info with
       | .axiomInfo _ => throwError "Project or shared declaration is an axiom: {name}"
       | .thmInfo _ => theorems := theorems + 1

@@ -1,0 +1,25 @@
+{
+  "challenge_module": "GlobalChallenge",
+  "solution_module": "Solution",
+  "theorem_names": [
+    "ConditionedStochasticStabilityHyperbolic.Theorem2_10",
+    "ConditionedStochasticStabilityHyperbolic.Theorem2_11",
+    "ConditionedStochasticStabilityHyperbolic.Paper.RegularNoise.Maps.raw_measurable",
+    "ConditionedStochasticStabilityHyperbolic.RestrictedNoise.integral_chain",
+    "ConditionedStochasticStabilityHyperbolic.strongFellerTransferOperator_represents",
+    "ConditionedStochasticStabilityHyperbolic.RankOneSpectralData.eigenmeasure_represents",
+    "ConditionedStochasticStabilityHyperbolic.Paper.LocalConclusions.normalizedGap_iff",
+    "ConditionedStochasticStabilityHyperbolic.Paper.LocalConclusions.normalizedGap_iff._proof_1"
+  ],
+  "definition_names": [
+    "ConditionedStochasticStabilityHyperbolic.RestrictedNoise.chain",
+    "ConditionedStochasticStabilityHyperbolic.strongFellerTransferOperator",
+    "ConditionedStochasticStabilityHyperbolic.RankOneSpectralData.eigenmeasure",
+    "ConditionedStochasticStabilityHyperbolic.Paper.LocalConclusions.NormalizedGap"
+  ],
+  "permitted_axioms": [
+    "propext",
+    "Quot.sound",
+    "Classical.choice"
+  ]
+}

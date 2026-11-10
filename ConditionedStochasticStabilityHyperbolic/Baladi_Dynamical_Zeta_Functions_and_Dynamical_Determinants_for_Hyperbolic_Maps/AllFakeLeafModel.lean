@@ -10,7 +10,7 @@ unstable dimension satisfying its literal signed supremum--infimum condition.
 Uniform slopes, graph maps and Gram densities are constructed. The only
 geometric background is the ordinary local inverse-function/graph area
 formula. No supremum-norm identification is a source field. -/
-public noncomputable section
+@[expose] public noncomputable section
 open Set MeasureTheory IsManifold
 open scoped Manifold ContDiff Topology
 namespace ConditionedStochasticStabilityHyperbolic.AllFakeLeafModel

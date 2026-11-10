@@ -1,0 +1,28 @@
+{
+  "challenge_module": "FiltrationChallenge",
+  "solution_module": "Solution",
+  "theorem_names": [
+    "ConditionedStochasticStabilityHyperbolic.Palomar.Theorem6_5",
+    "ConditionedStochasticStabilityHyperbolic.Paper.RegularNoise.Maps.raw_measurable",
+    "ConditionedStochasticStabilityHyperbolic.RestrictedNoise.integral_chain",
+    "ConditionedStochasticStabilityHyperbolic.strongFellerTransferOperator_represents",
+    "ConditionedStochasticStabilityHyperbolic.Global.FiltrationPressureConfinement.stratum_measurable",
+    "ConditionedStochasticStabilityHyperbolic.Global.AssembleShiftedPrefixFamilies.selectedIndex._proof_2",
+    "ConditionedStochasticStabilityHyperbolic.Global.PressureFiltrationSource.reversedVertex._proof_2",
+    "ConditionedStochasticStabilityHyperbolic.Global.GreedyPrefixGeometry.Data.terminal._proof_2",
+    "ConditionedStochasticStabilityHyperbolic.Global.DerivedHG2Basins.originalIndex._proof_2",
+    "ConditionedStochasticStabilityHyperbolic.Global.GreedyPrefixGeometry.Data.terminal_size",
+    "AbsorbingMarkovChains.FeynmanKac.ext_none",
+    "AbsorbingMarkovChains.FeynmanKac.ext_some"
+  ],
+  "definition_names": [
+    "ConditionedStochasticStabilityHyperbolic.RestrictedNoise.chain",
+    "ConditionedStochasticStabilityHyperbolic.strongFellerTransferOperator",
+    "AbsorbingMarkovChains.FeynmanKac.ext"
+  ],
+  "permitted_axioms": [
+    "propext",
+    "Quot.sound",
+    "Classical.choice"
+  ]
+}

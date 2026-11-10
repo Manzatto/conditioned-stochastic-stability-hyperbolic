@@ -1,1 +1,16 @@
-/.lake
+# Lake dependencies, build products, and local verification output.
+.lake/
+*.olean
+*.ilean
+*.olean.*
+*.ir
+*.ir.*
+*.trace
+*.log
+
+# Local machine metadata and credentials.
+.DS_Store
+.env
+.env.*
+__pycache__/
+*.pyc
