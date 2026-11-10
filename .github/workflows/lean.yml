@@ -32,7 +32,7 @@ permissions:
   actions: read
 
 concurrency:
-  group: conditioned-stochastic-stability-${{ github.ref }}-${{ inputs.palomar_preflight && 'palomar' || 'lean' }}
+  group: conditioned-stochastic-stability-${{ github.ref }}-${{ inputs.palomar_preflight && format('palomar-{0}', inputs.palomar_configuration || 'all') || 'lean' }}
   # A documentation update must not discard a running proof verification.
   cancel-in-progress: false
 

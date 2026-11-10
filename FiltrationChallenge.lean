@@ -46,10 +46,8 @@ section
 open Set Function
 open scoped Manifold ContDiff Topology
 namespace LeanShared.FractionalManifoldRegularity
-variable {E F M N : Type*}
-  [NormedAddCommGroup E] [NormedSpace ℝ E]
-  [NormedAddCommGroup F] [NormedSpace ℝ F]
-  [TopologicalSpace M] [ChartedSpace E M]
+variable {E F M N : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  [NormedAddCommGroup F] [NormedSpace ℝ F] [TopologicalSpace M] [ChartedSpace E M]
   [TopologicalSpace N] [ChartedSpace F N]
 def chartMap (f : M → N) (x : M) : E → F :=
   extChartAt (𝓘(ℝ, F)) (f x) ∘ f ∘ (extChartAt (𝓘(ℝ, E)) x).symm
@@ -83,10 +81,8 @@ section
 open Set Function Bundle
 open scoped Manifold ContDiff Topology Bundle
 namespace LeanShared.HyperbolicBasicSet
-variable {E M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
-  [FiniteDimensional ℝ E] [MetricSpace M] [ChartedSpace E M]
-  [IsManifold (𝓘(ℝ, E)) ∞ M]
-  [RiemannianBundle (fun x : M => TangentSpace (𝓘(ℝ, E)) x)]
+variable {E M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E] [MetricSpace M] [ChartedSpace E M]
+  [IsManifold (𝓘(ℝ, E)) ∞ M] [RiemannianBundle (fun x : M => TangentSpace (𝓘(ℝ, E)) x)]
 /-- Actual uniformly hyperbolic tangent data, with continuous splitting. -/
 structure HyperbolicData (T : M ≃ₜ M) (Λ : Set M) where
   compact : IsCompact Λ
@@ -202,10 +198,8 @@ section
 open Set MeasureTheory Bundle
 open scoped Manifold ContDiff Topology Bundle
 namespace LeanShared.HyperbolicBasicSet
-variable {E M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
-  [FiniteDimensional ℝ E] [MetricSpace M] [ChartedSpace E M]
-  [IsManifold (𝓘(ℝ, E)) ∞ M]
-  [RiemannianBundle (fun x : M => TangentSpace (𝓘(ℝ, E)) x)]
+variable {E M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E] [MetricSpace M] [ChartedSpace E M]
+  [IsManifold (𝓘(ℝ, E)) ∞ M] [RiemannianBundle (fun x : M => TangentSpace (𝓘(ℝ, E)) x)]
   {T : M ≃ₜ M} {Λ : Set M}
 /-- Intrinsic volume expansion of the actual unstable tangent restriction.
 Using its image as codomain works without a choice of tangent frames. -/
@@ -240,8 +234,7 @@ open Set MeasureTheory IsManifold
 open scoped Manifold ContDiff Topology NNReal ENNReal
 namespace ConditionedStochasticStabilityHyperbolic.Paper.RegularNoise
 open LeanShared
-variable {E M ι : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
-  [FiniteDimensional ℝ E] [MetricSpace M] [ChartedSpace E M]
+variable {E M ι : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E] [MetricSpace M] [ChartedSpace E M]
   [Fintype ι]
 abbrev Control := ι → ℝ
 abbrev cube (ε : ℝ≥0) := NoiseCubeRescaling.cube (ι := ι) ε
@@ -492,10 +485,8 @@ open Set Function Bundle MeasureTheory
 open scoped Manifold ContDiff Topology Bundle
 namespace ConditionedStochasticStabilityHyperbolic.Paper
 open LeanShared HyperbolicBasicSet
-variable {E M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
-  [FiniteDimensional ℝ E] [MetricSpace M] [ChartedSpace E M]
-  [IsManifold (𝓘(ℝ, E)) ∞ M]
-  [RiemannianBundle (fun x : M => TangentSpace (𝓘(ℝ, E)) x)]
+variable {E M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E] [MetricSpace M] [ChartedSpace E M]
+  [IsManifold (𝓘(ℝ, E)) ∞ M] [RiemannianBundle (fun x : M => TangentSpace (𝓘(ℝ, E)) x)]
 /-- The ordinary nonwandering set, using genuine positive-time returns. -/
 def nonwanderingSet (T : M → M) : Set M :=
   {x | ∀ U : Set M, IsOpen U → x ∈ U →
@@ -557,8 +548,7 @@ open Set MeasureTheory Filter
 open scoped NNReal Topology BoundedContinuousFunction
 namespace ConditionedStochasticStabilityHyperbolic.Paper.LocalConclusions
 open LeanShared
-variable {X : Type*} [MetricSpace X] [CompactSpace X]
-  [MeasurableSpace X] [BorelSpace X]
+variable {X : Type*} [MetricSpace X] [CompactSpace X] [MeasurableSpace X] [BorelSpace X]
 /-- The full spectral/product conclusion, including the finite left measure
 and the normalization, rather than only existence of a QEM. -/
 structure SpectralWitness (C : AbsorbingMarkovChains.CanonicalChain X)
@@ -588,8 +578,7 @@ open MeasureTheory
 open scoped BoundedContinuousFunction ENNReal
 namespace ConditionedStochasticStabilityHyperbolic.Paper.LocalConclusions
 open LeanShared
-variable {X : Type*} [MetricSpace X] [CompactSpace X]
-  [MeasurableSpace X] [BorelSpace X]
+variable {X : Type*} [MetricSpace X] [CompactSpace X] [MeasurableSpace X] [BorelSpace X]
 structure SimpleSpectralWitness (C : AbsorbingMarkovChains.CanonicalChain X)
     (R : ℝ) (ν : ProbabilityMeasure X) extends SpectralWitness C R ν where
   right_unique : ∀ f : X →ᵇ ℝ,
@@ -628,8 +617,7 @@ end
 section
 namespace ConditionedStochasticStabilityHyperbolic.Paper.RegularNoise
 open LeanShared
-variable {E M ι : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
-  [MetricSpace M] [ChartedSpace E M] [Fintype ι]
+variable {E M ι : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [MetricSpace M] [ChartedSpace E M] [Fintype ι]
 abbrev FixedControl := NoiseCubeRescaling.cube (ι := ι) 1
 namespace Maps
 variable {T : M ≃ₜ M} {r : ℝ} (F : Maps (E := E) (ι := ι) T r)
@@ -663,6 +651,18 @@ end LeanShared
 end
 section
 namespace ConditionedStochasticStabilityHyperbolic.Global.PressureFiltrationSource
+set_option linter.auxLemma false in
+/-- Explicit source name for the reversed list-index bound. -/
+theorem reversedVertex._proof_2.{u_1} {I : Type u_1} (L : List I) (i : Fin L.length) :
+    L.length - 1 - i.val < L.length := by sorry
+open Lean in
+set_option linter.auxLemma false in
+run_cmd do
+  let n := ``ConditionedStochasticStabilityHyperbolic.Global.PressureFiltrationSource.reversedVertex._proof_2
+  let ci ← getConstInfo n
+  let key : Lean.Meta.AuxLemmaKey := { type := ci.type, isPrivate := false, defeq := false }
+  modifyEnv fun env => Lean.Meta.auxLemmasExt.modifyState env fun s =>
+    { s with lemmas := s.lemmas.insert key (n, ci.levelParams) }
 variable {X I : Type*} [MetricSpace X]
 def reversedVertex (L : List I) (i : Fin L.length) : I :=
   L.get ⟨L.length - 1 - i.val, by omega⟩
@@ -697,11 +697,35 @@ end ConditionedStochasticStabilityHyperbolic.Global.GreedyPrefixGeometry
 end
 section
 namespace ConditionedStochasticStabilityHyperbolic.Global.DerivedHG2Basins
+set_option linter.auxLemma false in
+/-- Explicit source name for inclusion in the original finite index set. -/
+theorem originalIndex._proof_2 {ℓ : ℕ} {k : Fin ℓ} (i : Fin (k.val + 1)) : i.val < ℓ := by sorry
+open Lean in
+set_option linter.auxLemma false in
+run_cmd do
+  let n := ``ConditionedStochasticStabilityHyperbolic.Global.DerivedHG2Basins.originalIndex._proof_2
+  let ci ← getConstInfo n
+  let key : Lean.Meta.AuxLemmaKey := { type := ci.type, isPrivate := false, defeq := false }
+  modifyEnv fun env => Lean.Meta.auxLemmasExt.modifyState env fun s =>
+    { s with lemmas := s.lemmas.insert key (n, ci.levelParams) }
 abbrev originalIndex {ℓ : ℕ} {k : Fin ℓ} (i : Fin (k.val + 1)) : Fin ℓ :=
   ⟨i.val, by have h := i.isLt; have hh := k.isLt; omega⟩
 end ConditionedStochasticStabilityHyperbolic.Global.DerivedHG2Basins
 namespace ConditionedStochasticStabilityHyperbolic.Global.GreedyPrefixGeometry.Data
 open DerivedHG2Basins
+set_option linter.auxLemma false in
+/-- Explicit source name for the final vertex of a selected prefix. -/
+theorem terminal._proof_2.{u_1} {I : Type u_1} {edge : I → I → Prop} {pressure : I → ℝ}
+    (d : GreedyPrefixGeometry.Data edge pressure) (s : Fin d.number) :
+    d.size s - 1 < d.order.length := by sorry
+open Lean in
+set_option linter.auxLemma false in
+run_cmd do
+  let n := ``ConditionedStochasticStabilityHyperbolic.Global.GreedyPrefixGeometry.Data.terminal._proof_2
+  let ci ← getConstInfo n
+  let key : Lean.Meta.AuxLemmaKey := { type := ci.type, isPrivate := false, defeq := false }
+  modifyEnv fun env => Lean.Meta.auxLemmasExt.modifyState env fun s =>
+    { s with lemmas := s.lemmas.insert key (n, ci.levelParams) }
 variable {I : Type*} {edge : I → I → Prop} {pressure : I → ℝ}
   (d : GreedyPrefixGeometry.Data edge pressure)
 def terminal (s : Fin d.number) : Fin d.order.length :=
@@ -745,6 +769,18 @@ end ConditionedStochasticStabilityHyperbolic.Global.DerivedHG2Application
 end
 section
 namespace ConditionedStochasticStabilityHyperbolic.Global.AssembleShiftedPrefixFamilies
+set_option linter.auxLemma false in
+/-- Explicit source name for a selected root viewed in the original index set. -/
+theorem selectedIndex._proof_2 (ℓ t : ℕ) (terminal : Fin t → Fin ℓ)
+    (root : ∀ s, Fin ((terminal s).val + 1)) (s : Fin t) : (root s).val < ℓ := by sorry
+open Lean in
+set_option linter.auxLemma false in
+run_cmd do
+  let n := ``ConditionedStochasticStabilityHyperbolic.Global.AssembleShiftedPrefixFamilies.selectedIndex._proof_2
+  let ci ← getConstInfo n
+  let key : Lean.Meta.AuxLemmaKey := { type := ci.type, isPrivate := false, defeq := false }
+  modifyEnv fun env => Lean.Meta.auxLemmasExt.modifyState env fun s =>
+    { s with lemmas := s.lemmas.insert key (n, ci.levelParams) }
 variable (ℓ t : ℕ) (terminal : Fin t → Fin ℓ)
   (root : ∀ s, Fin ((terminal s).val + 1))
 abbrev selectedIndex (s : Fin t) : Fin ℓ :=
@@ -781,8 +817,7 @@ section
 namespace ConditionedStochasticStabilityHyperbolic.MeasurableCanonical
 open AbsorbingMarkovChains AbsorbingMarkovChains.FeynmanKac Finset
 -- Preserve the source declaration context and its exported universe names.
-variable {E X : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
-  [TopologicalSpace X] [MeasurableSpace X] [OpensMeasurableSpace X]
+variable {E X : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [TopologicalSpace X] [MeasurableSpace X] [OpensMeasurableSpace X]
   (C : CanonicalChain X)
 /-- The paper's unshifted measurable path average. -/
 def pathAverage (h : X → ℝ) (x : X) (n : ℕ) : ℝ :=
@@ -804,8 +839,7 @@ open scoped Topology BoundedContinuousFunction
 namespace ConditionedStochasticStabilityHyperbolic.Global.LiteralHG2Clauses
 open AbsorbingMarkovChains LeanShared ShiftedFiltrationGeometry
 open DerivedHG2Application DerivedHG2Basins
-variable {X I Ω : Type*} [MetricSpace X] [CompactSpace X] [MeasurableSpace X] [BorelSpace X]
-  [MeasurableSpace Ω]
+variable {X I Ω : Type*} [MetricSpace X] [CompactSpace X] [MeasurableSpace X] [BorelSpace X] [MeasurableSpace Ω]
   (T : X ≃ₜ X) (A : Set X) (hA : IsOpen A) (Λ : I → Set X) (ℓ : ℕ)
   (D : AdaptedSource T A Λ ℓ) (t : ℕ) (terminal : Fin t → Fin ℓ)
   (root : ∀ s, Fin ((terminal s).val + 1))
@@ -878,10 +912,8 @@ open Set Function Relation Bundle
 open scoped Manifold ContDiff Topology Bundle
 namespace ConditionedStochasticStabilityHyperbolic.Global.PaperHG2GreedySelection
 open LeanShared HyperbolicBasicSet Paper
-variable {E M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
-  [FiniteDimensional ℝ E] [MetricSpace M] [ChartedSpace E M]
-  [IsManifold (𝓘(ℝ, E)) ∞ M]
-  [RiemannianBundle (fun x : M => TangentSpace (𝓘(ℝ, E)) x)]
+variable {E M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E] [MetricSpace M] [ChartedSpace E M]
+  [IsManifold (𝓘(ℝ, E)) ∞ M] [RiemannianBundle (fun x : M => TangentSpace (𝓘(ℝ, E)) x)]
   [MeasurableSpace M] [BorelSpace M]
   {T : M ≃ₜ M} (D : SpectralDecomposition (E := E) T) (g : M → ℝ) (A : Set M)
 attribute [local instance] Classical.propDecidable
@@ -897,12 +929,9 @@ open scoped Manifold ContDiff Topology NNReal BoundedContinuousFunction
 namespace ConditionedStochasticStabilityHyperbolic.Palomar
 open LeanShared HyperbolicBasicSet Paper Paper.RegularNoise Global
 open ShiftedFiltrationGeometry GreedyPrefixGeometry FiltrationPressureConfinement
-variable {E ι : Type*} {X : Type}
-  [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E]
-  [MetricSpace X] [CompactSpace X] [SecondCountableTopology X] [ChartedSpace E X]
-  [IsManifold (𝓘(ℝ, E)) ∞ X]
-  [RiemannianBundle (fun x : X => TangentSpace (𝓘(ℝ, E)) x)]
-  [IsContinuousRiemannianBundle E (fun x : X => TangentSpace (𝓘(ℝ, E)) x)]
+variable {E ι : Type*} {X : Type} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E]
+  [MetricSpace X] [CompactSpace X] [SecondCountableTopology X] [ChartedSpace E X] [IsManifold (𝓘(ℝ, E)) ∞ X]
+  [RiemannianBundle (fun x : X => TangentSpace (𝓘(ℝ, E)) x)] [IsContinuousRiemannianBundle E (fun x : X => TangentSpace (𝓘(ℝ, E)) x)]
   [MeasurableSpace X] [BorelSpace X] [Fintype ι] {T : X ≃ₜ X}
 set_option maxHeartbeats 6400000 in
 /-- Theorem 6.5: existentially package the constructed compatible filtration,

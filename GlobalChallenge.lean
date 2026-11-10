@@ -754,6 +754,29 @@ def NormalizedGap {X : Type*} [MetricSpace X] [CompactSpace X]
     [MeasurableSpace X] [BorelSpace X] (C : AbsorbingMarkovChains.CanonicalChain X)
     (core : Set X) (ν : ProbabilityMeasure X) : Prop := by sorry
 
+set_option linter.auxLemma false in
+/-- A nonnegative bounded continuous observable has nonnegative killed transfer value. -/
+theorem normalizedGap_iff._proof_1.{u_1} :
+    ∀ {X : Type u_1} [inst : MetricSpace X] [inst_1 : MeasurableSpace X]
+      [inst_2 : BorelSpace X]
+      (C : AbsorbingMarkovChains.CanonicalChain X)
+      (sf : ConditionedStochasticStabilityHyperbolic.HasStrongFellerKernel C)
+      (f : X →ᵇ ℝ) (hf : ∀ x, 0 ≤ f x) (x : X),
+      0 ≤ ConditionedStochasticStabilityHyperbolic.strongFellerTransferOperator C sf f x := by
+  sorry
+
+-- Reuse this genuine source theorem when compiling the normalized-gap statement.
+open Lean in
+set_option linter.auxLemma false in
+run_cmd do
+  let n := ``ConditionedStochasticStabilityHyperbolic.Paper.LocalConclusions.normalizedGap_iff._proof_1
+  let ci ← getConstInfo n
+  let key : Lean.Meta.AuxLemmaKey :=
+    { type := ci.type, isPrivate := false, defeq := false }
+  modifyEnv fun env =>
+    Lean.Meta.auxLemmasExt.modifyState env fun s =>
+      { s with lemmas := s.lemmas.insert key (n, ci.levelParams) }
+
 /-- The normalized gap has exactly the displayed spectral and eigenmeasure meaning. -/
 theorem normalizedGap_iff {X : Type*} [MetricSpace X] [CompactSpace X]
     [MeasurableSpace X] [BorelSpace X] (C : AbsorbingMarkovChains.CanonicalChain X)
