@@ -27,6 +27,45 @@ open scoped Topology NNReal ENNReal SchwartzMap FourierTransform
 section
 namespace LeanShared.SchwartzJetSpace
 variable {E I : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+set_option linter.auxLemma false in
+/-- Explicit source anchor for the scalar commutation law used by `wordDerivative`.
+The original comparison name is retained to preserve the existing definition mapping. -/
+theorem wordDerivative._proof_1 :
+    @SMulCommClass.{0, 0, 0} Real Complex Complex
+      (@Algebra.toSMul.{0, 0} Real Complex
+        (@Semifield.toCommSemiring.{0} Real (@Field.toSemifield.{0} Real (@NormedField.toField.{0} Real Real.normedField)))
+        (@Ring.toSemiring.{0} Complex
+          (@SeminormedRing.toRing.{0} Complex
+            (@SeminormedCommRing.toSeminormedRing.{0} Complex
+              (@NormedCommRing.toSeminormedCommRing.{0} Complex
+                (@NormedField.toNormedCommRing.{0} Complex Complex.instNormedField)))))
+        (@NormedAlgebra.toAlgebra.{0, 0} Real Complex Real.normedField
+          (@SeminormedCommRing.toSeminormedRing.{0} Complex
+            (@NormedCommRing.toSeminormedCommRing.{0} Complex
+              (@NormedField.toNormedCommRing.{0} Complex Complex.instNormedField)))
+          (@RCLike.toNormedAlgebra.{0} Complex Complex.instRCLike)))
+      (@instSMulOfMul.{0} Complex
+        (@Distrib.toMul.{0} Complex
+          (@instDistribOfSemiring.{0} Complex
+            (@Ring.toSemiring.{0} Complex
+              (@SeminormedRing.toRing.{0} Complex
+                (@SeminormedCommRing.toSeminormedRing.{0} Complex
+                  (@NormedCommRing.toSeminormedCommRing.{0} Complex
+                    (@NormedField.toNormedCommRing.{0} Complex Complex.instNormedField)))))))) :=
+  Algebra.to_smulCommClass
+
+-- Preserve the compiler's original sharing of this closed scalar proof.
+open Lean in
+set_option linter.auxLemma false in
+run_cmd do
+  let n := ``LeanShared.SchwartzJetSpace.wordDerivative._proof_1
+  let ci ← getConstInfo n
+  let key : Lean.Meta.AuxLemmaKey :=
+    { type := ci.type, isPrivate := false, defeq := false }
+  modifyEnv fun env =>
+    Lean.Meta.auxLemmasExt.modifyState env fun s =>
+      { s with lemmas := s.lemmas.insert key (n, ci.levelParams) }
+
 def wordDerivative : List E → 𝓢(E, ℂ) →L[ℂ] 𝓢(E, ℂ)
   | [] => ContinuousLinearMap.id ℂ _
   | v :: w => (LineDeriv.lineDerivOpCLM ℂ 𝓢(E, ℂ) v).comp (wordDerivative w)

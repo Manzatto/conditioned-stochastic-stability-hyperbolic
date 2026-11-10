@@ -6,9 +6,19 @@ on:
   workflow_dispatch:
     inputs:
       palomar_preflight:
-        description: Run Palomar's full mechanical preflight for all four entries
+        description: Run Palomar's full mechanical preflight
         type: boolean
         default: false
+      palomar_configuration:
+        description: Comparator configuration to check
+        type: choice
+        default: all
+        options:
+          - all
+          - comparator.json
+          - comparator-global.json
+          - comparator-compact.json
+          - comparator-filtration.json
       authorization_relationship:
         description: Your relationship to the substantive formalization
         type: choice
@@ -158,21 +168,13 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        include:
-          - config: comparator.json
-            request_id: preflight001
-          - config: comparator-global.json
-            request_id: preflight002
-          - config: comparator-compact.json
-            request_id: preflight003
-          - config: comparator-filtration.json
-            request_id: preflight004
+        config: ${{ fromJSON(inputs.palomar_configuration != 'all' && format('["{0}"]', inputs.palomar_configuration) || '["comparator.json","comparator-global.json","comparator-compact.json","comparator-filtration.json"]') }}
     uses: PalomarRegistry/PalomarSubmission/.github/workflows/submission.yml@14aa8d6b3c2f14a8540605e37144560b9a00e7e7
     with:
       repository: ${{ github.repository }}
       commit: ${{ github.sha }}
       pipeline_commit: 14aa8d6b3c2f14a8540605e37144560b9a00e7e7
-      request_id: ${{ matrix.request_id }}
+      request_id: ${{ matrix.config == 'comparator.json' && 'preflight001' || matrix.config == 'comparator-global.json' && 'preflight002' || matrix.config == 'comparator-compact.json' && 'preflight003' || 'preflight004' }}
       mode: full
       execution_profile: palomar-standard-v1
       options: >-
