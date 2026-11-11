@@ -21,10 +21,10 @@ The theorems are named after their numbers in the article. They are in
 | --- | --- | --- |
 | Theorem 2.7 | Under (HL), for small noise the process conditioned to stay in `V̄` has a unique quasi-ergodic measure `ν_ε` with `Λ ⊆ supp ν_ε`, and `ν_ε = μ_ε(· g_ε)` for the leading eigen-data of `P_ε` | `Theorem2_7` |
 | Theorem 2.8 | `ν_ε` converges weakly to the unique equilibrium state of `φ − log\|det DT\|_{E^u}\|` on `Λ` | `Theorem2_8` |
-| Theorem 2.10 | Under (HG1), the process killed in `A` has simple leading eigen-data, a normalized spectral gap, and a unique quasi-ergodic measure supported on the dominant basic set | `Theorem2_10` |
+| Theorem 2.10 | Under (HG1), the process killed in `A` has simple leading eigen-data, a normalized spectral gap, and a quasi-ergodic measure unique among those whose support contains the dominant basic set | `Theorem2_10` |
 | Theorem 2.11 | These quasi-ergodic measures converge weakly to the equilibrium state of the dominant basic set | `Theorem2_11` |
 | Theorem 3.15 | Compact embedding of the anisotropic spaces: `B^{Θ',t',s'}` embeds compactly in `B^{Θ,t,s}` | `Theorem3_15` (see below) |
-| Theorem 6.5 | Under (HG2), items (i)–(iv): conditioned limits on stable sets, weak limits on each retained basic set, finite-time absorption | `Theorem6_5` |
+| Theorem 6.5 | Under (HG2), items (i)–(iv): conditioned limits on stable sets, weak limits on selected basic sets, finite-time absorption | `Theorem6_5` |
 
 [docs/StatementAudit.md](docs/StatementAudit.md) compares each hypothesis and conclusion with the
 article. Most hypotheses are the article's own; the rest are encodings:
@@ -190,12 +190,21 @@ only Mathlib and specifies its mathematical definitions. All configurations use
 [`Solution.lean`](Solution.lean), which exports the existing proofs and proves
 additional identities needed to characterize definition holes.
 
-| Results | Independent statement | Comparator configuration |
-| --- | --- | --- |
-| Theorems 2.7 and 2.8 | [`Challenge.lean`](Challenge.lean) | [`comparator.json`](comparator.json) |
-| Theorems 2.10 and 2.11 | [`GlobalChallenge.lean`](GlobalChallenge.lean) | [`comparator-global.json`](comparator-global.json) |
-| Theorem 3.15 | [`CompactChallenge.lean`](CompactChallenge.lean) | [`comparator-compact.json`](comparator-compact.json) |
-| Theorem 6.5 | [`FiltrationChallenge.lean`](FiltrationChallenge.lean) | [`comparator-filtration.json`](comparator-filtration.json) |
+These are four numbered parts of one project. Each part has a distinct registry
+title and abstract, while sharing the same authors, paper, proof development and
+this project overview. Palomar records one entry per Comparator configuration.
+
+| Part and results | Independent statement | Comparator configuration | Entry metadata |
+| --- | --- | --- | --- |
+| I: Local limits — Theorems 2.7 and 2.8 | [`Challenge.lean`](Challenge.lean) | [`comparator.json`](comparator.json) | [`palomar/local.yaml`](palomar/local.yaml) |
+| II: Global limits — Theorems 2.10 and 2.11 | [`GlobalChallenge.lean`](GlobalChallenge.lean) | [`comparator-global.json`](comparator-global.json) | [`palomar/global.yaml`](palomar/global.yaml) |
+| III: Local anisotropic compact embedding — Theorem 3.15 | [`CompactChallenge.lean`](CompactChallenge.lean) | [`comparator-compact.json`](comparator-compact.json) | [`palomar/compact.yaml`](palomar/compact.yaml) |
+| IV: Axiom A filtrations and selected equilibrium limits — Theorem 6.5 | [`FiltrationChallenge.lean`](FiltrationChallenge.lean) | [`comparator-filtration.json`](comparator-filtration.json) | [`palomar/filtration.yaml`](palomar/filtration.yaml) |
+
+Each registry title begins with **Conditioned stochastic stability**, followed by
+the part number and its mathematical subject above. Each entry's abstract names
+the companion parts and links to this overview. After registration, this table
+will also link to the four permanent Palomar records.
 
 The local and global definition holes are the killed noisy chain and its
 continuous transfer operator; compared integral identities specify their action.
@@ -220,8 +229,16 @@ the physical noisy process on the stated small-noise window. The original theore
 remains available. All mathematical scope qualifications above and in
 [`docs/StatementAudit.md`](docs/StatementAudit.md) still apply.
 
-[`formalization.yaml`](formalization.yaml) records authorship, sources, AI
-provenance, verification and review status, and known limitations.
+In Theorem 6.5, equilibrium limits are identified for the selected roots indexed
+by `Fin G.number`. The order `G.order` includes every retained basic set, but
+`G.number` can be smaller; an equilibrium limit is not claimed for every retained
+basic set.
+
+[`formalization.yaml`](formalization.yaml) records the project-wide authorship,
+sources, AI provenance, verification and review status, and known limitations.
+The four entry metadata files preserve those disclosures and add the specific
+title, abstract and scope for each part. The preflight workflow and submission
+requests explicitly select the corresponding metadata file.
 
 Run the proof build, strict checks and axiom audit with `bash scripts/verify.sh`.
 Run all four comparisons, including the bundled NanoDa, con-ron and Lean kernel

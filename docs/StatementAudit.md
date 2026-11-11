@@ -161,6 +161,7 @@ The weight hypotheses are the same as above. The article's `e^φ = g ∈ C^{r-1}
 
 - `equilibrium_limit` gives `ν_{ε,s} → equilibrium s` weakly.
 - The first two conjuncts state that `(equilibrium s).map val` is the unique equilibrium state for `φ − log|det DT|E^u|` on `Λ_{i_s}`.
+- Here `s` ranges over the selected roots (`Fin G.number` in the adapter), not over every retained basic set in `G.order`. The selected family can be smaller than the retained family; no equilibrium limit on every retained basic set is asserted.
 - For `s = 0` under HG1 alone, see `global_existence`.
 
 **Item (iv).** `absorption` says: if `x` eventually enters `A`, there are `N` and `δ_x` such that for every `0 < ε < δ_x` and every control sequence, the entrance time is at most `N`. This is *stronger* than "there exist `ε` and `N`".

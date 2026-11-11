@@ -72,6 +72,8 @@ status:
     cover all six results. The Theorem 6.5 adapter exposes the constructed
     filtration and measure families as existential witnesses, preserving the
     original literal and labelled conclusions and specifying the physical chain.
+    Equilibrium limits are identified for selected roots, not for every retained
+    basic set in the filtration order.
     The counts below concern the proof development and exclude deliberate
     holes in independent Challenge statements.
   sorry_count: 0
@@ -116,7 +118,9 @@ fidelity:
     manifold. The global results explicitly assume strict trapping
     T(closure A) subset A and agreement of the physical and reference weights
     on retained basic sets. Theorem 6.5 states measurability of the potential
-    separately. A continuous Riemannian metric is used. Theorem 3.15 is the
+    separately. Its equilibrium limits concern selected roots; the selected
+    family can be smaller than the retained family. A continuous Riemannian
+    metric is used. Theorem 3.15 is the
     local compact-injection statement, with its cone and exponent hypotheses.
     The scalar normalizer bounds the exponential weight and is an encoding
     device. See README.md and docs/StatementAudit.md for the full account.
