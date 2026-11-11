@@ -196,10 +196,10 @@ this project overview. Palomar records one entry per Comparator configuration.
 
 | Part and results | Independent statement | Comparator configuration | Entry metadata |
 | --- | --- | --- | --- |
-| I: Local limits — Theorems 2.7 and 2.8 | [`Challenge.lean`](Challenge.lean) | [`comparator.json`](comparator.json) | [`palomar/local.yaml`](palomar/local.yaml) |
-| II: Global limits — Theorems 2.10 and 2.11 | [`GlobalChallenge.lean`](GlobalChallenge.lean) | [`comparator-global.json`](comparator-global.json) | [`palomar/global.yaml`](palomar/global.yaml) |
-| III: Local anisotropic compact embedding — Theorem 3.15 | [`CompactChallenge.lean`](CompactChallenge.lean) | [`comparator-compact.json`](comparator-compact.json) | [`palomar/compact.yaml`](palomar/compact.yaml) |
-| IV: Axiom A filtrations and selected equilibrium limits — Theorem 6.5 | [`FiltrationChallenge.lean`](FiltrationChallenge.lean) | [`comparator-filtration.json`](comparator-filtration.json) | [`palomar/filtration.yaml`](palomar/filtration.yaml) |
+| I: Local limits — Theorems 2.7 and 2.8 | [`Challenge.lean`](Challenge.lean) | [`comparator.json`](comparator.json) | [`palomar/local/formalization.yaml`](palomar/local/formalization.yaml) |
+| II: Global limits — Theorems 2.10 and 2.11 | [`GlobalChallenge.lean`](GlobalChallenge.lean) | [`comparator-global.json`](comparator-global.json) | [`palomar/global/formalization.yaml`](palomar/global/formalization.yaml) |
+| III: Local anisotropic compact embedding — Theorem 3.15 | [`CompactChallenge.lean`](CompactChallenge.lean) | [`comparator-compact.json`](comparator-compact.json) | [`palomar/compact/formalization.yaml`](palomar/compact/formalization.yaml) |
+| IV: Axiom A filtrations and selected equilibrium limits — Theorem 6.5 | [`FiltrationChallenge.lean`](FiltrationChallenge.lean) | [`comparator-filtration.json`](comparator-filtration.json) | [`palomar/filtration/formalization.yaml`](palomar/filtration/formalization.yaml) |
 
 Each registry title begins with **Conditioned stochastic stability**, followed by
 the part number and its mathematical subject above. Each entry's abstract names

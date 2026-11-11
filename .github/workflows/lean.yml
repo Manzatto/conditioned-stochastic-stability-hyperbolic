@@ -178,4 +178,4 @@ jobs:
       mode: full
       execution_profile: palomar-standard-v1
       options: >-
-        {"comparator_config_path":"${{ matrix.config }}","formalization_metadata_path":"${{ matrix.config == 'comparator.json' && 'palomar/local.yaml' || matrix.config == 'comparator-global.json' && 'palomar/global.yaml' || matrix.config == 'comparator-compact.json' && 'palomar/compact.yaml' || 'palomar/filtration.yaml' }}","authorization_relationship":"${{ inputs.authorization_relationship }}"}
+        {"comparator_config_path":"${{ matrix.config }}","formalization_metadata_path":"${{ matrix.config == 'comparator.json' && 'palomar/local/formalization.yaml' || matrix.config == 'comparator-global.json' && 'palomar/global/formalization.yaml' || matrix.config == 'comparator-compact.json' && 'palomar/compact/formalization.yaml' || 'palomar/filtration/formalization.yaml' }}","authorization_relationship":"${{ inputs.authorization_relationship }}"}
