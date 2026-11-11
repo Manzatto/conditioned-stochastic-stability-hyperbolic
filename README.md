@@ -203,8 +203,12 @@ this project overview. Palomar records one entry per Comparator configuration.
 
 Each registry title begins with **Conditioned stochastic stability**, followed by
 the part number and its mathematical subject above. Each entry's abstract names
-the companion parts and links to this overview. After registration, this table
-will also link to the four permanent Palomar records.
+the companion parts and gives this overview's URL. Palomar also displays the
+shared source repository as a link. Once registered, readers can
+[browse all four parts together on Palomar](https://palomar-registry.org/?q=Manzatto%2Fconditioned-stochastic-stability-hyperbolic).
+After registration, this table will also link to the four permanent Palomar
+records. The filtered view groups the project for browsing; the four statements
+remain separate registry records.
 
 The local and global definition holes are the killed noisy chain and its
 continuous transfer operator; compared integral identities specify their action.
